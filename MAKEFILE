@@ -1,0 +1,31 @@
+#   Make file for DevilLogic.
+#   Copyright (c) 2006 by Logic Yan
+
+#       make -B                 Will build DevilLogic.EXE
+#       make -B -DDEBUG         Will build the debug version of DevilLogic.EXE
+
+NAME = ReliveThread
+OBJS = $(NAME).obj
+#DEF  = $(NAME).def
+
+!if $d(DEBUG)
+TASMDEBUG=/zi
+LINKDEBUG=/v
+!else
+TASMDEBUG=
+LINKDEBUG=
+!endif
+
+!if $d(MAKEDIR)
+#$(MAKEDIR)\..\lib\import32
+IMPORT=C:\TASM\LIB\IMPORT32.LIB
+!else
+IMPORT=import32
+!endif
+
+
+$(NAME).EXE: $(OBJS) $(DEF)
+  tlink32 /Tpe /aa /c $(LINKDEBUG) $(OBJS),$(NAME),, $(IMPORT), $(DEF)
+
+.asm.obj:
+   tasm32 $(TASMDEBUG) /ml /m2 $&.asm
